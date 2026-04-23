@@ -5,7 +5,7 @@ const verifyToken = require("../middleware/authMiddleware");
 
 // GET habits
 router.get("/", verifyToken, async (req, res) => {
-  const habits = await Habit.find({ userId: req.user.uid });
+  const habits = await Habit.find({ userId: req.user.firebaseId });
   res.json(habits);
 });
 
@@ -13,7 +13,7 @@ router.get("/", verifyToken, async (req, res) => {
 router.post("/", verifyToken, async (req, res) => {
   const habit = new Habit({
     title: req.body.title,
-    userId: req.user.uid,
+    userId: req.user.firebaseId,
   });
 
   await habit.save();
@@ -24,7 +24,7 @@ router.post("/", verifyToken, async (req, res) => {
 router.delete("/:id", verifyToken, async (req, res) => {
   await Habit.findOneAndDelete({
     _id: req.params.id,
-    userId: req.user.uid,
+    userId: req.user.firebaseId,
   });
   res.json({ msg: "Habit deleted" });
 });
@@ -34,7 +34,7 @@ router.put("/:id", verifyToken, async (req, res) => {
   const habit = await Habit.findOneAndUpdate(
     {
       _id: req.params.id,
-      userId: req.user.uid,
+      userId: req.user.firebaseId,
     },
     { title: req.body.title },
     { new: true },
@@ -49,7 +49,7 @@ router.put("/:id/toggle", verifyToken, async (req, res) => {
 
   const habit = await Habit.findOne({
     _id: req.params.id,
-    userId: req.user.uid,
+    userId: req.user.firebaseId,
   });
 
   if (!habit) return res.status(404).json({ msg: "Not found" });
