@@ -13,7 +13,11 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // later restrict to your frontend URL
+  })
+);
 app.use(express.json());
 app.use("/api/tasks", taskRoutes);
 app.use("/api/habits", require("./routes/habits"));
