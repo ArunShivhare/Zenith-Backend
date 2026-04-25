@@ -25,22 +25,39 @@ router.post("/schedule", verifyToken, async (req, res) => {
   try {
     const { taskId, hour } = req.body;
 
-    const date = new Date();
-    const today = date.toISOString().split("T")[0];
+    const now = new Date();
 
-    date.setHours(hour);
-    date.setMinutes(0);
+    // ✅ LOCAL DATE (NOT UTC)
+    const today = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    )
+      .toISOString()
+      .split("T")[0];
+
+    // ✅ LOCAL TIME (NO SHIFT)
+    const scheduledTime = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      hour,
+      0,
+      0
+    );
 
     const log = new TaskLog({
       taskId,
       userId: req.user.firebaseId,
       date: today,
-      scheduledTime: date,
+      scheduledTime,
     });
 
     await log.save();
 
-    res.json(log);
+    const populatedLog = await log.populate("taskId");
+
+    res.json(populatedLog);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
