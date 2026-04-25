@@ -25,6 +25,12 @@ const taskSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    history: [
+      {
+        date: String, // "2026-04-25"
+        status: String, // "completed" | "pending"
+      },
+    ],
     dueDate: Date,
     scheduledTime: Date,
   },
