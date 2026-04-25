@@ -26,20 +26,8 @@ router.post("/schedule", verifyToken, async (req, res) => {
   try {
     const { taskId, hour } = req.body;
 
-    const now = new Date();
-
     // ✅ LOCAL DATE (NOT UTC)
     const today = new Date().toLocaleDateString("en-CA");
-
-    // ✅ LOCAL TIME (NO SHIFT)
-    const scheduledTime = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      hour,
-      0,
-      0,
-    );
 
     const existing = await TaskLog.findOne({
       taskId,
@@ -55,7 +43,7 @@ router.post("/schedule", verifyToken, async (req, res) => {
       taskId,
       userId: req.user.firebaseId,
       date: today,
-      scheduledTime,
+      hour,
     });
 
     await log.save();

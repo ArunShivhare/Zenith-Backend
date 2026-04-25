@@ -13,12 +13,12 @@ const taskLogSchema = new mongoose.Schema({
   },
 
   date: {
-    type: String, // "2026-04-25"
+    type: String,
     required: true,
   },
 
-  scheduledTime: {
-    type: Date,
+  hour: {
+    type: Number,
     required: true,
   },
 
