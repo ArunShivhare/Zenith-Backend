@@ -45,6 +45,16 @@ router.post("/schedule", verifyToken, async (req, res) => {
       0,
     );
 
+    const existing = await TaskLog.findOne({
+      taskId,
+      userId: req.user.firebaseId,
+      date: today,
+    });
+
+    if (existing) {
+      return res.json(existing);
+    }
+
     const log = new TaskLog({
       taskId,
       userId: req.user.firebaseId,
@@ -53,17 +63,7 @@ router.post("/schedule", verifyToken, async (req, res) => {
     });
 
     await log.save();
-
     const populatedLog = await log.populate("taskId");
-    const existing = await TaskLog.findOne({
-      taskId,
-      userId: req.user.firebaseId,
-      date: today,
-    });
-
-    if (existing) {
-      return res.json(existing); // prevent duplicate
-    }
 
     res.json(populatedLog);
   } catch (err) {
