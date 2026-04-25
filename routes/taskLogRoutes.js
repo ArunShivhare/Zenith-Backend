@@ -8,9 +8,7 @@ const verifyToken = require("../middleware/authMiddleware");
 router.get("/today", verifyToken, async (req, res) => {
   try {
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      .toISOString()
-      .split("T")[0];
+    const today = new Date().toLocaleDateString("en-CA");
 
     const logs = await TaskLog.find({
       userId: req.user.firebaseId,
@@ -31,9 +29,7 @@ router.post("/schedule", verifyToken, async (req, res) => {
     const now = new Date();
 
     // ✅ LOCAL DATE (NOT UTC)
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      .toISOString()
-      .split("T")[0];
+    const today = new Date().toLocaleDateString("en-CA");
 
     // ✅ LOCAL TIME (NO SHIFT)
     const scheduledTime = new Date(
@@ -107,9 +103,7 @@ router.delete("/:id", verifyToken, async (req, res) => {
 router.get("/review", verifyToken, async (req, res) => {
   try {
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-      .toISOString()
-      .split("T")[0];
+    const today = new Date().toLocaleDateString("en-CA");
 
     const logs = await TaskLog.find({
       userId: req.user.firebaseId,
@@ -117,7 +111,8 @@ router.get("/review", verifyToken, async (req, res) => {
     }).populate("taskId");
 
     const completed = logs.filter((l) => l.status === "completed");
-    const missed = logs.filter((l) => l.status !== "completed");
+    const missed = logs.filter((l) => l.status === "missed");
+    const pending = logs.filter((l) => l.status === "pending");
 
     res.json({
       total: logs.length,
