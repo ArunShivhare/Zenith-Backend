@@ -7,7 +7,10 @@ const verifyToken = require("../middleware/authMiddleware");
 // 📌 GET today's scheduled tasks
 router.get("/today", verifyToken, async (req, res) => {
   try {
-    const today = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      .toISOString()
+      .split("T")[0];
 
     const logs = await TaskLog.find({
       userId: req.user.firebaseId,
@@ -28,11 +31,7 @@ router.post("/schedule", verifyToken, async (req, res) => {
     const now = new Date();
 
     // ✅ LOCAL DATE (NOT UTC)
-    const today = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
-    )
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
       .toISOString()
       .split("T")[0];
 
@@ -43,7 +42,7 @@ router.post("/schedule", verifyToken, async (req, res) => {
       now.getDate(),
       hour,
       0,
-      0
+      0,
     );
 
     const log = new TaskLog({
@@ -98,7 +97,10 @@ router.delete("/:id", verifyToken, async (req, res) => {
 // 📊 DAILY REVIEW
 router.get("/review", verifyToken, async (req, res) => {
   try {
-    const today = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      .toISOString()
+      .split("T")[0];
 
     const logs = await TaskLog.find({
       userId: req.user.firebaseId,
