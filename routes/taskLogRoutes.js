@@ -118,6 +118,7 @@ router.get("/review", verifyToken, async (req, res) => {
       total: logs.length,
       completed: completed.length,
       missed: missed.length,
+      pending: pending.length,
       logs,
     });
   } catch (err) {
