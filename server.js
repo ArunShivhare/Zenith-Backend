@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const authMiddleware = require("./middleware/authMiddleware");
 const taskRoutes = require("./routes/taskRoutes");
+const taskLogRoutes = require("./routes/taskLogRoutes");
 
 // Connect DB
 connectDB();
@@ -18,6 +19,7 @@ app.use(
 app.use(express.json());
 app.use("/api/tasks", taskRoutes);
 app.use("/api/habits", require("./routes/habits"));
+app.use("/api/tasklogs", taskLogRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
